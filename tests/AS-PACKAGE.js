@@ -10,7 +10,3 @@ const parser = require("../app");
 const LOLCODE = 'VISIBLE "OMG HI"';
 
 console.log(parser(LOLCODE));
-
-console.log();
-
-console.log(parser(LOLCODE, true));
