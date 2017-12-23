@@ -55,3 +55,9 @@ npm i lolcode
 ```
 
 <hr>
+
+## :warning: Warning
+
+**This is highly experimental!**
+
+<hr>
