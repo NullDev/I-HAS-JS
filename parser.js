@@ -9,7 +9,7 @@ let warn    = null;
 //----------------------------//
 ////////////////////////////////
 
-var noop = () => {};
+const noop = () => {};
 
 function _xor(op1, op2){ return !!((op1 || op2) && !(op1 && op2)); }
 
@@ -85,11 +85,11 @@ function parseStringLiterals(str, strip){
     if (strip == true || strip == undefined){
         this.aliases = [];
         this.num_alaises = 0;
-        var i = -1;
-        var last_i = 0;
-        var start;
-        var in_str = false;
-        var str_ = "";
+        let i = -1;
+        let last_i = 0;
+        let start;
+        let in_str = false;
+        let str_ = "";
         while ((i = str.indexOf('"', i+1)) !== -1){
             if (!in_str){
                 str_ += str.substr(last_i, i - last_i);
@@ -97,12 +97,12 @@ function parseStringLiterals(str, strip){
                 start = i;
             }
             else {
-                var escapes = 0;
-                var j=i-1;
-                while (j>=0 && str[j--] == ":") escapes++;
+                let escapes = 0;
+                let j = i - 1;
+                while (j >= 0 && str[j--] == ":") escapes++;
                 if (!(escapes % 2)){
                     in_str = false;
-                    var quoted = str.substr(start + 1, (i - start - 1));
+                    let quoted = str.substr(start + 1, (i - start - 1));
                     quoted = quoted.replace(/(\\*)(\n)/g, function($0, $1){
                         if ($1.length % 2) return $0;
                         return "\\n";
@@ -130,16 +130,16 @@ function parseStringLiterals(str, strip){
         return str_;
     }
     else {
-        for (var i = this.num_alaises - 1; i >= 0; i--) str = str.replace("@" + i, '"' + this.aliases[i] + '"');
+        for (let i = this.num_alaises - 1; i >= 0; i--) str = str.replace("@" + i, '"' + this.aliases[i] + '"');
         return str;
     }
 }
 
 function tokenizer(str){
-    var tokens = [];
-    var string = [];
-    for (var i = 0; i < str.length; i++){
-        var str_ = str.substr(i), match = null;
+    let tokens = [];
+    let string = [];
+    for (let i = 0; i < str.length; i++){
+        let str_ = str.substr(i), match = null;
         if      ((match = /^A\b/.exec(str_))) tokens.push("A");
         else if ((match = (/^I HAS A(?=\s)/.exec(str_)))) tokens.push("DECLARE");
         else if ((match = (/^(R|IT[SZ])(?=\s)/.exec(str_)))) tokens.push("ASSIGN");
@@ -190,8 +190,8 @@ function tokenizer(str){
         }
     }
     if (tokens.length != string.length) ihasjsErr("Got different number of tokens than matches. This is fatal.");    
-    var ret = [];
-    for (var i = 0; i < tokens.length; i++){
+    let ret = [];
+    for (let i = 0; i < tokens.length; i++){
         ret.push(tokens[i]);
         ret.push(string[i]);
     }
@@ -199,15 +199,15 @@ function tokenizer(str){
 }
 
 function subOperation(tokens){
-    var s = tokens[1];
+    let s = tokens[1];
     if (s.charAt(0) == "B") return ">" + evalLine(tokens.slice(2));
     else if (s.charAt(0) == "S") return "<" + evalLine(tokens.slice(2));
     else if (s == "NOT") return "!(" + evalLine(tokens.slice(2)) + ")";
 }
 
 function getVariable(token){
-    var value = token[1];
-    var xc = value.split("!").length-1;
+    let value = token[1];
+    let xc = value.split("!").length-1;
     if (!xc) return value;
     value = value.replace(/!/, "[");
     value = value.replace(/!/g, "][");
@@ -216,8 +216,8 @@ function getVariable(token){
 }
 
 function evalExpression(tokens){
-    var string = tokens[1];
-    var op_symbols =  {
+    let string = tokens[1];
+    let op_symbols =  {
         "SUM OF"      : { symbol: "+",    nary: 2,  before: "(",          after: ")"  },
         "DIFF OF"     : { symbol: "-",    nary: 2,  before: "(",          after: ")"  },
         "PRODUKT OF"  : { symbol: "*",    nary: 2,  before: "(",          after: ")"  },
@@ -239,16 +239,16 @@ function evalExpression(tokens){
         "ORD OF"      : { symbol: "",     nary: 1,  before: "_ord(",      after: ")"  },
         "LEN OF"      : { symbol: "",     nary: 1,  before: "_len(",      after: ")"  }
     };
-    var stack = [];
-    var str_ = "";
-    for (var i=0; i<tokens.length; i += 2){
-        var s = tokens[i + 1], t = tokens[i], schedule_pop = false;
+    let stack = [];
+    let str_ = "";
+    for (var i = 0; i < tokens.length; i += 2){
+        let s = tokens[i + 1], t = tokens[i], schedule_pop = false;
         switch(t){
             case "BINARY_OP":
             case "NARY_OP": {
                 if (stack.length){
-                    var st = stack[stack.length-1];
-                    str_ += (st.terms)? st.symbol : "";        
+                    let st = stack[stack.length - 1];
+                    str_ += (st.terms) ? st.symbol : "";        
                 }
                 var sym = op_symbols[s];
                 var sym_copy = { symbol: sym.symbol, nary: sym.nary, before: sym.before, after: sym.after };
@@ -311,14 +311,14 @@ function evalExpression(tokens){
 }
 
 function evalIdentifier(tokens){
-    var id = tokens[1];
+    let id = tokens[1];
     if (!isFunc(id)) return getVariable([tokens[0], tokens[1]]) + evalLine(tokens.slice(2));
     return evalExpression(tokens);
 }
 
 function evalLine(tokens){
     if (!tokens.length) return "";
-    var t = tokens[0];
+    let t = tokens[0];
     switch(t){
         case "BINARY_OP":
         case "NARY_OP": { return evalExpression(tokens); }
@@ -326,7 +326,10 @@ function evalLine(tokens){
         case "ASSIGN": { return "=" + evalLine(tokens.slice(2)); }
         case "LITERAL": { return evalIdentifier(tokens); }
         case "CAST": {
-            var func = "", type = null, val = [], i;
+            let func = "";
+            let type = null;
+            let val = [];
+            let i;
             for (i = 2; i < tokens.length; i += 2){
                 if (tokens[i] == "A"){
                     i += 2;
@@ -374,19 +377,19 @@ function evalLine(tokens){
 }
 
 function parseLoop(tokens){
-    var action = tokens[5] + (tokens[3].match(/^UPPIN/) ? "++" : "--");  
-    var condition = evalLine(tokens.slice(8));
+    let action = tokens[5] + (tokens[3].match(/^UPPIN/) ? "++" : "--");  
+    let condition = evalLine(tokens.slice(8));
     if (tokens[7].charAt(0) == "T") condition = "!(" + condition + ")";
-    var init = tokens[5] + "= ((typeof " + tokens[5] + '=="undefined") ? 0 : ' + tokens[5] + ")";
-    var loop = "for((" + init + ");"  + condition + ";" + action + "){";
+    let init = tokens[5] + "= ((typeof " + tokens[5] + '=="undefined") ? 0 : ' + tokens[5] + ")";
+    let loop = "for((" + init + ");"  + condition + ";" + action + "){";
     return loop;
 }
 
 function evalFunctionDefinition(tokens){ 
-    var f = "function " + tokens[3] + "(", args = 0;
-    for (var i=4; i<tokens.length; i += 2){
-        var s = tokens[i + 1];
-        var t = tokens[i];
+    let f = "function " + tokens[3] + "(", args = 0;
+    for (var i = 4; i < tokens.length; i += 2){
+        let s = tokens[i + 1];
+        let t = tokens[i];
         if (t != "IDENTIIFER") continue;
         f += s;
         args++;
@@ -400,7 +403,7 @@ function evalFunctionDefinition(tokens){
 
 function interpreteLine(tokens){
     if (!tokens.length) return "";
-    var t = tokens[0], js = "";
+    let t = tokens[0], js = "";
     switch(t){
         case "BINARY_OP":
         case "NARY_OP": { return "IT =" + evalExpression(tokens) + ";"; }
@@ -418,14 +421,14 @@ function interpreteLine(tokens){
         }
         case "PROMPT": { return tokens[3] + ' = prompt("' + tokens[3] + '");'; }
         case "STDOUT": {
-            var newline = !(tokens[tokens.length - 2] == "SCREECH"), t;
+            let newline = !(tokens[tokens.length - 2] == "SCREECH"), t;
             if (newline) t = tokens.slice(2);
             else t = tokens.slice(2, tokens.length - 2);
-            var stdouttxt = evalLine(t);
+            let stdouttxt = evalLine(t);
             return "console.log(" + (stdouttxt.isArray ? prettyprintArr(stdouttxt) : stdouttxt) + ");";
         }
         case "INC_OP": {
-            var v = evalIdentifier([tokens[2], tokens[3]]);
+            let v = evalIdentifier([tokens[2], tokens[3]]);
             if (tokens.length >= 8) v += "+=" + evalLine(tokens.slice(6)) + ";";
             else v += "++;";
             return v;
@@ -453,11 +456,11 @@ function ihasjs(str, callback){
     str = remComments(str);
     str = parseStringLiterals(str, true);
     str = parseInit(str);
-    var s = str.split("\n");
-    var js_out = "";
-    for (var i=0; i<s.length; i++){
-        var t = tokenizer(s[i]);
-        var js = interpreteLine(t);
+    let s = str.split("\n");
+    let js_out = "";
+    for (let i = 0; i < s.length; i++){
+        let t = tokenizer(s[i]);
+        let js = interpreteLine(t);
         js_out += js + "\n";
     }
     js_out = parseStringLiterals(js_out, false);
