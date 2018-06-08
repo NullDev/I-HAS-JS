@@ -3,7 +3,9 @@
   "version": "0.1.2",
   "description": "Parse LOLCODE to JavaScript",
   "main": "app.js",
-  "dependencies": {},
+  "dependencies": {
+    "minimist": "^1.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NLDev/I-HAS-JS.git"
