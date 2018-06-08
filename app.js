@@ -1,6 +1,4 @@
 "use strict";
-let fs    = require("fs");
-let parse = require("./parser");
 
 ////////////////////////////////
 //----------------------------//
@@ -8,7 +6,12 @@ let parse = require("./parser");
 //----------------------------//
 ////////////////////////////////
 
-const isset = function(obj){ return !!(obj && obj !== null && (typeof obj === "string" && obj !== "")); };
+let fs    = require("fs");
+let parse = require("./parser");
+
+let isset = function(obj){ 
+    return !!(obj && obj !== null && (typeof obj === 'string' || typeof obj === 'number' && obj !== "") || obj === 0); 
+};
 
 const parser = function(code, notPlain){
     parse(code, function(err, warn, fin){
@@ -20,15 +23,30 @@ const parser = function(code, notPlain){
 };
 
 const spawnShell = function(){
+    let pArg = require("minimist")(process.argv.slice(2));
+
+    if (("h" in pArg) || ("help" in pArg)) return console.log(
+        "\nHelp:\n\n" +
+        " |===========|=======|=================================|==========|=========|\n" +
+        " | Argument  | Alias | Description                     | Required | Default |\n" +
+        " | --------- | ----- | ------------------------------- | -------- | ------- |\n" +
+        " | --help    | -h    | Displays the help menu          | No       | N/A     |\n" +
+        " | --plain   | -p    | Output the JS only. Dont run it | No       | False   |\n" +
+        " | --out     | -o    | Set where to write the result   | No       | N/A     |\n" +
+        " | --verbose | -v    | Display additional informations | No       | False   |\n" +
+        " | ----------| ----- | ------------------------------- | -------- | ------- |\n" +
+        " |==========================================================================|\n"
+    );
+
+
     let file = process.argv.slice(2)[0];
-    let noPlain = true;
-    let plain = "";
+    let plain = false;
     if (!isset(file)) return console.log("Error: No input file.");
     fs.readFile(file, "utf8", function(err, data){
         if (err) return console.log("Error: " + err);
-        plain = (isset(process.argv.slice(3)[0]) ? process.argv.slice(3)[0] : "");
-        if (plain.toLowerCase() == "--plain" || plain.toLowerCase() == "-p") noPlain = false;
-        parser(data, noPlain);
+
+        plain = pArg.p || pArg.plain;
+        parser(data, !plain);
     });
 };
 
