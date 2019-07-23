@@ -8,7 +8,7 @@ A LOLCODE interpreter written in JavaScript
 ## :information_source: About
 
 This is a LOLCODE interpreter/parser written in NodeJS.
-It can be used as interpreter, hich executes the code in the terminal as well as a parser, which outputs the parsed JavaScript code. 
+It can be used as interpreter, which executes the code in the terminal as well as a parser, which outputs the parsed JavaScript code. 
 
 ## :bulb: Usage
 
