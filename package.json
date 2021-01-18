@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NLDev/I-HAS-JS.git"
+    "url": "git+https://github.com/NullDev/I-HAS-JS.git"
   },
   "maintainers": [
     {
@@ -29,7 +29,7 @@
   "author": "NullDev",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/NLDev/I-HAS-JS/issues"
+    "url": "https://github.com/NullDev/I-HAS-JS/issues"
   },
-  "homepage": "https://github.com/NLDev/I-HAS-JS#readme"
+  "homepage": "https://github.com/NullDev/I-HAS-JS#readme"
 }
