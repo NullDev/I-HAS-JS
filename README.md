@@ -1,7 +1,7 @@
 # I HAS JS
 
 <p align="center">
-<img height="150" width="auto" src="https://raw.githubusercontent.com/NLDev/I-HAS-JS/master/icon.png" /><br>
+<img height="150" width="auto" src="https://raw.githubusercontent.com/NullDev/I-HAS-JS/master/icon.png" /><br>
 A LOLCODE interpreter written in JavaScript
 </p>
 
